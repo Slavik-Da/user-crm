@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { User } from "./entities/users.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Repository } from "typeorm";
+import { Repository } from "typeorm";
+import type { DeleteResult } from "typeorm";
 import { HashedRefreshToken } from "../auth/entities/refreshTokens.entity";
-import { CreateUserDto } from "./dto/create-user.dto";
+import type { CreateUserDto } from "./dto/create-user.dto";
 import { UsersDAO } from "./dao/usersDAO";
 import { hashData } from "../common/libs/hashData";
 
@@ -15,8 +16,9 @@ export class UsersService {
     public hashedRefreshTokenRepository: Repository<HashedRefreshToken>,
     public usersDAO: UsersDAO,
   ) {}
+
   async register(newUser: CreateUserDto): Promise<User> {
-    const user: User = await this.usersDAO.getUserByEmail(newUser.email);
+    const user = await this.usersDAO.getUserByEmail(newUser.email);
     if (user) {
       throw new HttpException("User exists", HttpStatus.CONFLICT);
     }
@@ -27,18 +29,18 @@ export class UsersService {
       hashedPassword: hashedPass,
     });
 
-    return this.usersDAO.getUserByEmail(newUser.email);
+    return await this.usersDAO.getUserByEmail(newUser.email);
   }
 
-  getAllUsers(): Promise<User[]> {
-    return this.userRepository.find();
+  async getAllUsers(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 
-  getUserById(id: string): Promise<User> {
-    return this.userRepository.findOneBy({ id });
+  async getUserById(id: string): Promise<User> {
+    return await this.userRepository.findOneByOrFail({ id });
   }
 
-  deleteById(id: string): Promise<DeleteResult> {
-    return this.userRepository.delete(id);
+  async deleteById(id: string): Promise<DeleteResult> {
+    return await this.userRepository.delete(id);
   }
 }
