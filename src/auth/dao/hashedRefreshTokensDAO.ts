@@ -1,16 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { User } from "../../users/entities/users.entity";
+import type { User } from "../../users/entities/users.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DataSource, DeleteResult, Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
+import type { DeleteResult } from "typeorm";
 import { HashedRefreshToken } from "../entities/refreshTokens.entity";
 import { UsersDAO } from "../../users/dao/usersDAO";
 @Injectable()
 export class HashedRefreshTokensDAO {
   constructor(
     @InjectRepository(HashedRefreshToken)
-    private hashedRefreshTokenRepository: Repository<HashedRefreshToken>,
-    private usersDAO: UsersDAO,
-    private dataSource: DataSource
+    private readonly hashedRefreshTokenRepository: Repository<HashedRefreshToken>,
+    private readonly usersDAO: UsersDAO,
+    private readonly dataSource: DataSource
   ) {}
 
   async saveHashedRefreshTokenForUser(userEntity, hashedToken): Promise<User> {
@@ -20,25 +21,25 @@ export class HashedRefreshTokensDAO {
       });
 
     if (Array.isArray(userEntity.hashedRefreshToken)) {
-      //in case if user already have refreshTokens
+      // in case if user already have refreshTokens
       userEntity.hashedRefreshToken.push(hashedRefreshTokenEntity);
     } else {
-      //in case if user haven`t any refreshTokens
+      // in case if user haven`t any refreshTokens
       userEntity.hashedRefreshToken = [hashedRefreshTokenEntity];
     }
-    const updatedUser = this.usersDAO.saveUser(userEntity);
+    const updatedUser = await this.usersDAO.saveUser(userEntity);
     return updatedUser;
   }
 
-  deleteHashedRefreshToken(userEntity: User): Promise<DeleteResult> {
-    return this.hashedRefreshTokenRepository.delete({ user: userEntity });
+  async deleteHashedRefreshToken(userEntity: User): Promise<DeleteResult> {
+    return await this.hashedRefreshTokenRepository.delete({ user: userEntity });
   }
 
   async removeToken(tokenValue: string): Promise<HashedRefreshToken> {
-    const tokenToRemove = await this.hashedRefreshTokenRepository.findOne({
+    const tokenToRemove: HashedRefreshToken = await this.hashedRefreshTokenRepository.findOneOrFail({
       where: { token: tokenValue },
     });
-    return this.hashedRefreshTokenRepository.remove(tokenToRemove);
+    return await this.hashedRefreshTokenRepository.remove(tokenToRemove);
   }
 
   public async saveHashedRefreshToken(
