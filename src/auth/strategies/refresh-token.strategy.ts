@@ -28,6 +28,6 @@ export class RefreshTokenStrategy extends PassportStrategy(
     return {
       ...payload,
       refreshToken,
-    };
+    } as ValidateReturn;
   }
 }
