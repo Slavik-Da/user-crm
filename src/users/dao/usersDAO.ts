@@ -19,6 +19,6 @@ export class UsersDAO {
   }
 
   findUserById(userId: string): Promise<User> {
-    return this.userRepository.findOneBy({ id: userId });
+    return this.userRepository.findOneByOrFail({ id: userId });
   }
 }
