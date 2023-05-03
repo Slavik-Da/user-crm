@@ -1,12 +1,13 @@
 import {
   Entity,
   Column,
-  OneToMany,
+  OneToMany, ManyToMany, JoinTable
 } from "typeorm";
 import { HashedRefreshToken } from "../../auth/entities/refreshTokens.entity";
 import { BaseEntity } from "../../common/entities/baseEntity";
 import { Exclude } from "class-transformer";
 import { Order } from "../../order/entities/order.entity";
+import { Tag } from "../../tag/entities/tag.entity";
 
 @Entity()
 export class User extends BaseEntity {
@@ -27,4 +28,7 @@ export class User extends BaseEntity {
   @OneToMany(() => Order, order => order.user, {eager: true})
   orders: Order[];
 
+  @ManyToMany(() => Tag, tag => tag.users)
+  @JoinTable()
+  tags: Tag[];
 }
