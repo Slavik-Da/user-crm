@@ -11,7 +11,7 @@ export class UsersDAO {
   ) {}
 
   getUserByEmail(userEmail: string): Promise<User> {
-    return this.userRepository.findOneBy({ email: userEmail });
+    return this.userRepository.findOneByOrFail({ email: userEmail });
   }
 
   saveUser(user: SaveUserDto): Promise<User> {
