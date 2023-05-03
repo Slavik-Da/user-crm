@@ -4,6 +4,7 @@ import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { DatabaseModule } from "./database/database.module";
 import { OrderModule } from "./order/order.module";
+import { TagModule } from "./tag/tag.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { OrderModule } from "./order/order.module";
     UsersModule,
     AuthModule,
     OrderModule,
+    TagModule
   ],
   controllers: [],
   providers: [],
