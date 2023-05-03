@@ -18,7 +18,7 @@ export class TagController {
     @UserDecorator() user: JwtPayload,
     @Param("userId") userId: string
   ) {
-    return await this.tagService.createUserTag(user.sub, userId, newTag.name, newTag.color);
+    return await this.tagService.addUserTag(user.sub, userId, newTag.name, newTag.color);
   }
 
 }
