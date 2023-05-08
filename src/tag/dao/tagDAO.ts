@@ -15,5 +15,12 @@ export class TagDAO {
     return this.tagRepository.create(tag);
   }
 
+  async saveTag(tag: Tag): Promise<Tag> {
+    return await this.tagRepository.save(tag)
+  }
+
+  async findTagByNameAndColor(tag: CreateTagDto): Promise<Tag | null> {
+    return await this.tagRepository.findOneBy({name: tag.name, color: tag.color})
+  }
 
 }
