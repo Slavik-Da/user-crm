@@ -18,11 +18,11 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
   async login(userData: CreateUserDto): Promise<TokensType> {
-    const user: User = await this.usersDAO.getUserByEmail(userData.email);
+    const user: User| null = await this.usersDAO.getUserByEmail(userData.email);
     if (!user) {
       throw new HttpException('User not exists', HttpStatus.NOT_FOUND);
     }
-    if (!user.hashedPassword) {
+    if (!user?.hashedPassword) {
       throw new HttpException(
         'You need to complete your registration',
         HttpStatus.FORBIDDEN,
