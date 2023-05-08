@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   @OneToMany(() => Order, order => order.user, {eager: true})
   orders: Order[];
 
-  @ManyToMany(() => Tag, tag => tag.users)
+  @ManyToMany(() => Tag, tag => tag.users, {eager: true, cascade: true})
   @JoinTable()
   tags: Tag[];
 }
