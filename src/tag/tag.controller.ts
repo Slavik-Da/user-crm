@@ -3,6 +3,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { UserDecorator } from "../auth/decorators/user.decorator";
 import { JwtPayload } from "../types";
 import { TagService } from "./tag.service";
+import type { Tag } from "./entities/tag.entity";
 
 @Controller()
 export class TagController {
@@ -17,7 +18,7 @@ export class TagController {
     @Body() newTag,
     @UserDecorator() user: JwtPayload,
     @Param("userId") userId: string
-  ) {
+  ): Promise<Tag> {
     return await this.tagService.addUserTag(user.sub, userId, newTag.name, newTag.color);
   }
 
