@@ -7,18 +7,18 @@ import { User } from "../entities/users.entity";
 @Injectable()
 export class UsersDAO {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
-  getUserByEmail(userEmail: string): Promise<User> {
-    return this.userRepository.findOneByOrFail({ email: userEmail });
+  async getUserByEmail(userEmail: string): Promise<User| null> {
+    return await this.userRepository.findOneBy({ email: userEmail });
   }
 
-  saveUser(user: SaveUserDto): Promise<User> {
-    return this.userRepository.save(user);
+  async saveUser(user: SaveUserDto): Promise<User> {
+    return await this.userRepository.save(user);
   }
 
-  findUserById(userId: string): Promise<User> {
-    return this.userRepository.findOneByOrFail({ id: userId });
+  async findUserById(userId: string): Promise<User|null> {
+    return await this.userRepository.findOneBy({ id: userId });
   }
 }
