@@ -18,18 +18,16 @@ export class UsersService {
   ) {}
 
   async register(newUser: CreateUserDto): Promise<User> {
-    const user = await this.usersDAO.getUserByEmail(newUser.email);
+    const user: User | null = await this.usersDAO.getUserByEmail(newUser.email);
     if (user) {
       throw new HttpException("User exists", HttpStatus.CONFLICT);
     }
     const hashedPass = await hashData(newUser.password);
 
-    await this.usersDAO.saveUser({
+    return await this.usersDAO.saveUser({
       email: newUser.email,
       hashedPassword: hashedPass,
     });
-
-    return await this.usersDAO.getUserByEmail(newUser.email);
   }
 
   async getAllUsers(): Promise<User[]> {
